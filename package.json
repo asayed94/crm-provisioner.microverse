@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "add-resource": "node ./scripts/addResource.js",
-    "validate": "node ./scripts/validateScehma.js"
+    "validate": "node ./scripts/validateScehma.js",
+    "staged": "node ./scripts/stagedFiles.js"
   },
   "dependencies": {
     "ajv": "^8.12.0"

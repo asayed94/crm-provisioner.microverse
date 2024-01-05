@@ -3,5 +3,5 @@
 
 function getStagedFiles(sha) {
   const stagedFiles = execSync(`git diff-tree --no-commit-id --name-only -r ${sha}`).toString();
-  return stagedFiles.split("\n").filter((file) => file);
+  console.log(stagedFiles.split("\n"));
 }
