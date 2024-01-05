@@ -1,0 +1,43 @@
+name: Testing
+
+on: [push]
+
+permissions:
+  contents: read
+  id-token: write
+  actions: read
+
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version-file: '.node-version'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@lessonnine'
+
+      - name: yarn install
+        run: yarn install
+
+      - name: Linting
+        run: yarn lint
+
+      - name: Testing
+        run: yarn test
+
+  build:
+    needs: [testing]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job for branch status check
+        run: echo Build complete

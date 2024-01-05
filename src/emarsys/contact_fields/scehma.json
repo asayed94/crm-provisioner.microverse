@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "application_type": {
+            "enum": [
+                "shorttext",
+                "longtext",
+                "largetext",
+                "date",
+                "url",
+                "numeric"
+            ]
+        }
+    }
+}

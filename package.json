@@ -1,0 +1,15 @@
+{
+  "name": "crm-provisioner.microverse",
+  "version": "1.0.0",
+  "description": "A project that's responsible of automatically provisioning resources to CRM providers like Emarsys",
+  "main": "index.js",
+  "author": "Ahmed Sayed <asayed@babbel.com>",
+  "license": "MIT",
+  "scripts": {
+    "add-resource": "node ./scripts/addResource.js",
+    "validate": "node ./scripts/validateScehma.js"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0"
+  }
+}
