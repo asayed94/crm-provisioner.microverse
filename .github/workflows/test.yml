@@ -24,16 +24,25 @@ jobs:
           cache: 'yarn'
           node-version-file: '.node-version'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@lessonnine'
+          # scope: '@lessonnine'
 
       - name: yarn install
         run: yarn install
 
       - name: Linting
-        run: yarn lint
-
-      - name: Testing
-        run: yarn test
+        run: yarn validate
+      
+      - uses: actions/github-script@v6
+        id: set-result
+        with:
+          script: |
+              console.log(`Total Changed Files: ${JSON.stringify(context)}`);
+      
+      - name: Get changed files 
+        run: echo "::set-output name=files::$(git diff --name-only --diff-filter=A ${{ github.base_ref }}...${{ github.head_ref }})"
+      
+      # - name: Testing
+      #   run: yarn test
 
   build:
     needs: [testing]

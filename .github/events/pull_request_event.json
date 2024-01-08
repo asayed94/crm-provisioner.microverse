@@ -1,0 +1,17 @@
+{
+  "action": "opened",
+  "pull_request": {
+    "number": 123,
+    "head": {
+      "ref": "CRMP-1",
+      "sha": "abc123"
+    },
+    "base": {
+      "ref": "main",
+      "sha": "aea1ba"
+    }
+  },
+  "repository": {
+    "full_name": "your-username/your-repo"
+  }
+}
