@@ -1,4 +1,4 @@
-name: CI build
+name: CI build (Create/Delete resources)
 
 on: push
 
@@ -7,7 +7,7 @@ env:
   EMARSYS_SECRET: ${{ secrets.EMARSYS_SECRET }}
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   actions: read
 
@@ -82,8 +82,15 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn update_resource_config ${{matrix.file}} ${{ steps.create_resource.outputs.response }}
           git add ${{matrix.file}}
-          git commit -m "OPS-000: Update new resource configureation ${{matrix.file}}"
-          git push origin ${{ github.event.pull_request.head.ref }}
+          # git commit -m "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          # git push origin ${{ github.event.pull_request.head.ref }}
+        
+      
+      - name: Commit new resource config
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          push_options: --force
   
   build:
     needs: [build-slices]
