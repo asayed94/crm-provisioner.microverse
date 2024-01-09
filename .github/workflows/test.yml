@@ -1,9 +1,9 @@
 name: Testing
  
-on:
-  push:
-    branches-ignore:
-      - operations/*
+on: 
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
 
 permissions:
   contents: read
@@ -33,8 +33,8 @@ jobs:
         run: yarn install
 
       - name: Validate Files Changes
-        run: yarn validate_changes:head_main ${{github.sha}}
+        run: yarn validate_changes:head_main ${{github.event.pull_request.head.sha}}
 
       - name: Validate new resources Schema
-        run: yarn validate_schema $(yarn --silent changes A ${{github.sha}})
+        run: yarn validate_schema $(yarn --silent changes A ${{github.event.pull_request.head.sha}})
 

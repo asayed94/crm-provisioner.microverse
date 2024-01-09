@@ -1,10 +1,8 @@
 name: CI build (Create resources)
 
 on: 
-  workflow_run:
-    workflows: ["Testing"]
-    types:
-      - completed
+  pull_request_review:
+    types: [submitted]
 
 env:
   EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
@@ -38,12 +36,13 @@ jobs:
         run: yarn install
 
       - id: list_changes
-        run: echo "matrix=$(yarn --silent changes A ${{github.sha}} --out json)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(yarn --silent changes A ${{github.event.pull_request.head.sha}} --out json)" >> $GITHUB_OUTPUT
       
     outputs:
       matrix: ${{ steps.list_changes.outputs.matrix }}
   
   build-slices:
+    if: github.event.review.state == 'approved'
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
@@ -97,6 +96,7 @@ jobs:
           push_options: --force
   
   build:
+    if: github.event.review.state == 'approved'
     needs: [build-slices]
     runs-on: ubuntu-latest
     steps:
