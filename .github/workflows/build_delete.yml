@@ -35,17 +35,18 @@ jobs:
         run: yarn install
 
       - id: list_changes
-        run: echo "matrix=$(yarn --silent changes D ${{github.event.pull_request.head.sha}}} --out json)" >> $GITHUB_OUTPUT
-      
+        run: echo "matrix=$(yarn --silent changes D ${{github.event.pull_request.head.sha}} --out json)" >> $GITHUB_OUTPUT
+
     outputs:
       matrix: ${{ steps.list_changes.outputs.matrix }}
   
   build-slices:
+    if: ${{ (github.event.review.state == 'approved') &&  (fromJson(needs.set.outputs.matrix).length > 0) }}
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         file: ${{ fromJson(needs.set.outputs.matrix) }}
 
     steps:
@@ -74,6 +75,7 @@ jobs:
             response=$(yarn --silent delete_resource ${{matrix.file}})
             echo "::set-output name=response::'$response'"
   build:
+    if: github.event.review.state == 'approved'
     needs: [build-slices]
     runs-on: ubuntu-latest
     steps:
