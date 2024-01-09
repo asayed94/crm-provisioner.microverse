@@ -22,11 +22,35 @@ permissions:
 
 
 jobs:
+  set:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@lessonnine'
+
+      - name: yarn install
+        run: yarn install
+
+      - id: list_changes
+        run: echo ::set-output name=matrix::"$(yarn --silent changes A ${{github.sha}}|jq -cnR '[inputs | select(length>0)]')"
+  
   build-slices:
+    needs: [set]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        new-resource: ${{fromJson(steps.list_dirs.outputs.matrix)}}
+        new-resource: ${{fromJson(needs.set.outputs.matrix)}}
 
     steps:
       
