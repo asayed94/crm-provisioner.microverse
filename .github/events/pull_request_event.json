@@ -1,15 +1,19 @@
 {
-  "action": "approved",
+  "action": "submitted",
   "pull_request": {
     "number": 123,
     "head": {
-      "ref": "operations/1",
-      "sha": "66fbc7ab474d5be86c3efc95b6a2b2e1ef7b75e9"
+      "ref": "add_new_field",
+      "sha": "95ff6547be3540ab346be720bcb88b1955e46af6"
     },
     "base": {
       "ref": "main",
-      "sha": "aea1ba446aed38e227e2684bab7c62eeae8cd8a1"
+      "sha": "2c79c8529f9db87a2167f421e141fec1fc0ae183"
     }
+  },
+  "pull_request_review": {
+    "action": "submitted",
+    "state": "approved"
   },
   "repository": {
     "full_name": "asayed94/crm-provisioner.microverse.git"
