@@ -35,12 +35,17 @@ jobs:
 
       - id: list_changes
         run: echo "matrix=$(yarn --silent changes A ${{github.sha}} --out json)" >> $GITHUB_OUTPUT
+      
+    outputs:
+      matrix: ${{ steps.list_changes.outputs.matrix }}
   
   build-slices:
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.set.outputs.matrix) }}
+      fail-fast: false
+      matrix: 
+        file: ${{ fromJson(needs.set.outputs.matrix) }}
 
     steps:
       - name: Checkout the repo
