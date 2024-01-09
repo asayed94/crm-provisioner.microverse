@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 
 const current_directory = path.resolve(__dirname);
 const BASE_API = "https://api.emarsys.net/api/v2/field";
@@ -48,9 +48,8 @@ exports.create = async function (filename, token) {
 exports.remove = async function (filename, token) {
   const simpleGit = require("simple-git");
   const git = simpleGit();
-  const commitSHA = exec("git rev-parse origin/main").toString().trim();
-  const headCommitSHA = exec("git rev-parse HEAD").toString().trim();
-  const payloadContent = await git.show([`${commitSHA}...${headCommitSHA}:${filename}`]);
+  const commitSHA = execSync("git rev-parse origin/main").toString().trim();
+  const payloadContent = await git.show([`${commitSHA}:${filename}`]);
   console.log("DELETED FILE CONFIG", payloadContent);
   const api = `${BASE_API}/${JSON.parse(payloadContent).id}`;
   const options = {
