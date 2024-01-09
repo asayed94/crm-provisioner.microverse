@@ -32,9 +32,14 @@ exports.create = async function (filename, token) {
 
   try {
     const response = await sendRequest(BASE_API, options, payloadContent);
-    return response.replyCode === 0 ? response.data : response;
+    if (response.replyCode === 0) {
+      return response.data;
+    } else {
+      console.error(response.data);
+      process.exit(1);
+    }
   } catch (error) {
-    console.error(error.message);
+    console.error(error.message, error.response.data);
     process.exit(1);
   }
 };

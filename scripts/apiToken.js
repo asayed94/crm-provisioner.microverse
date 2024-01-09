@@ -15,7 +15,6 @@ const emarsys_token = (username, secret) => {
 exports.apiToken = function (filename, username, secret) {
   if (filename.includes("emarsys")) {
     const token = emarsys_token(username, secret);
-    console.log(token);
     return token;
   }
 };

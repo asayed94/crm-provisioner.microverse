@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 const filename = process.argv[2];
 const extraConfig = process.argv[3];
@@ -14,7 +15,8 @@ if (!extraConfig) {
 
 const correctPath = path.resolve(__dirname, "..", filename);
 const config = JSON.parse(fs.readFileSync(correctPath));
-config.update(JSON.parse(extraConfig));
+console.log("config", extraConfig);
+Object.assign(config, JSON.parse(extraConfig));
 fs.writeFileSync(path.resolve(correctPath), JSON.stringify(config, null, 2), {
   encoding: "utf8",
 });
