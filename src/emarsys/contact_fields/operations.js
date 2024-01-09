@@ -50,12 +50,11 @@ exports.remove = async function (filename, token) {
   const git = simpleGit();
   const commitSHA = execSync("git rev-parse origin/main").toString().trim();
   const payloadContent = await git.show([`${commitSHA}:${filename}`]);
-  console.log("DELETED FILE CONFIG", payloadContent);
+  console.log("DELETED FILE CONFIG", JSON.parse(payloadContent));
   const api = `${BASE_API}/${JSON.parse(payloadContent).id}`;
   const options = {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
       "X-WSSE": token,
     },
   };
