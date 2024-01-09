@@ -1,0 +1,34 @@
+name: Auto Merge PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  auto_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Your Name"
+          git config --global user.email "your-email@example.com"
+
+      - name: Auto Merge PR
+        run: |
+          # Get PR number
+          PR_NUMBER=$(gh pr view ${{ github.event.pull_request.number }} --json number --jq .number)
+
+          # Merge PR
+          gh pr merge $PR_NUMBER --auto

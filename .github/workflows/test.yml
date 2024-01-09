@@ -1,6 +1,9 @@
 name: Testing
-
-on: [push]
+ 
+on:
+  push:
+    branches-ignore:
+      - operations/*
 
 permissions:
   contents: read
@@ -18,22 +21,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - name: Use Nodejs
+        uses: actions/setup-node@v2
         with:
           cache: 'yarn'
-          node-version-file: '.node-version'
+          node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
 
       - name: yarn install
         run: yarn install
 
-      - name: Linting
-        run: yarn lint
+      - name: Validate Files Changes
+        run: yarn validate_changes:head_main ${{github.sha}}
 
-      - name: Testing
-        run: yarn test
+      - name: Validate new resources Schema
+        run: yarn validate_schema $(yarn --silent changes A ${{github.sha}})
+
+        
 
   build:
     needs: [testing]

@@ -1,26 +1,19 @@
-name: CI build
+name: CI build (Create/Delete resources)
 
-on:
-  workflow_run:
-    workflows: ["Testing"]
-    branches: [main]
-    types:
-      - completed
+on: push
+
+env:
+  EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
+  EMARSYS_SECRET: ${{ secrets.EMARSYS_SECRET }}
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   actions: read
 
-env:
-  COMMIT_SHA: ${{ github.sha }}
-  REPOSITORY: ${{ github.repository }}
-  AWS_BUCKET: ${{ vars.AWS_BUCKET }}
-  AWS_BUCKET_REGION: ${{ vars.AWS_BUCKET_REGION }}
-  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
 jobs:
-  install-debs:
+  set:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,22 +23,29 @@ jobs:
           fetch-depth: 0
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           cache: 'yarn'
-          node-version-file: '.node-version'
+          node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
 
       - name: yarn install
         run: yarn install
 
+      - id: list_changes
+        run: echo "matrix=$(yarn --silent changes A ${{github.sha}} --out json)" >> $GITHUB_OUTPUT
+      
+    outputs:
+      matrix: ${{ steps.list_changes.outputs.matrix }}
+  
   build-slices:
+    needs: [set]
     runs-on: ubuntu-latest
-    needs: [install-debs]
     strategy:
-      matrix:
-        lambda: ['crm-user-activities', 'crm-user-signintoken', 'crm-user-marketing']
+      fail-fast: false
+      matrix: 
+        file: ${{ fromJson(needs.set.outputs.matrix) }}
 
     steps:
       - name: Checkout the repo
@@ -54,48 +54,44 @@ jobs:
           fetch-depth: 0
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           cache: 'yarn'
-          node-version-file: '.node-version'
+          node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
 
       - name: yarn install
         run: yarn install
 
-      - name: Linting
-        run: yarn lint
-
-      - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Provision new resource
+        id: create_resource
+        # if: |
+        #     github.event.review.state == 'approved' &&
+        #     github.event.pull_request.base.ref == 'main'
+        run: |
+            response=$(yarn --silent create_resource ${{matrix.file}})
+            echo "::set-output name=response::'$response'"
+      
+      - name: Commit new resource
+        # if: |
+        #   github.event.review.state == 'approved' &&
+        #   github.event.pull_request.base.ref == 'main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          yarn update_resource_config ${{matrix.file}} ${{ steps.create_resource.outputs.response }}
+          git add ${{matrix.file}}
+          # git commit -m "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          # git push origin ${{ github.event.pull_request.head.ref }}
+        
+      
+      - name: Commit new resource config
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Building
-        if: github.ref != 'refs/heads/main'
-        shell: bash
-        run: yarn build
-
-      - name: Building and Packaging artifact (merging to main)
-        if: github.ref == 'refs/heads/main'
-        shell: bash
-        run: sh scripts/package.sh ${{matrix.lambda}}
-
-      - name: Upload s3 (merging to main)
-        if: github.ref == 'refs/heads/main'
-        shell: bash
-        run: aws s3 cp dist/${{matrix.lambda}}/index.zip s3://${AWS_BUCKET}/${REPOSITORY}/${{matrix.lambda}}.lambda/${COMMIT_SHA}/index.zip --region ${AWS_BUCKET_REGION} --metadata-directive REPLACE
-
-      - name: Publish build artifact metadata (merging to main)
-        if: github.ref == 'refs/heads/main'
-        uses: babbel/publish-build-metadata@v1
-        with:
-          meta_table_arn: ${{ vars.AWS_META_TABLE_ARN }}
-          slices: ${{matrix.lambda}}.lambda
-
+          commit_message: "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          push_options: --force
+  
   build:
     needs: [build-slices]
     runs-on: ubuntu-latest

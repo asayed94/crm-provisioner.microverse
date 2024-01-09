@@ -2,9 +2,12 @@
     "type": "object",
     "properties": {
         "name": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(?![0-9])[A-Za-z0-9-_]+$",
+            "description": "A string that contains letters, numbers, hyphens, and underscores, but does not start with a number"
         },
         "application_type": {
+            "description": "The type of contact field, it has to be one of the following values: shorttext, longtext, largetext, date, url, numeric",
             "enum": [
                 "shorttext",
                 "longtext",

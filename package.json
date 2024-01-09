@@ -5,12 +5,18 @@
   "main": "index.js",
   "author": "Ahmed Sayed <asayed@babbel.com>",
   "license": "MIT",
+  "type": "commonjs",
   "scripts": {
     "add-resource": "node ./scripts/addResource.js",
-    "validate": "node ./scripts/validateScehma.js",
-    "staged": "node ./scripts/stagedFiles.js"
+    "validate_schema": "node ./scripts/validateScehma.js",
+    "validate_changes:head_main": "node ./scripts/validateChanges.js",
+    "changes": "node ./scripts/stagedFiles.js",
+    "create_resource": "node ./scripts/createResource.js",
+    "update_resource_config": "node ./scripts/updateResourceConfig.js"
   },
   "dependencies": {
-    "ajv": "^8.12.0"
+    "ajv": "^8.12.0",
+    "axios": "^1.6.5",
+    "minimist": "^1.2.8"
   }
 }
