@@ -23,7 +23,7 @@ const { apiToken } = require("./apiToken.js");
       console.log("Please provide an Emarsys token");
       process.exit(1);
     }
-    const res = await remove(filename.split("/").pop(), token);
+    const res = await remove(filename, token);
     console.log(JSON.stringify(res));
   }
 })();
