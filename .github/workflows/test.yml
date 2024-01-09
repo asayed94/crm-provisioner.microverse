@@ -38,11 +38,3 @@ jobs:
       - name: Validate new resources Schema
         run: yarn validate_schema $(yarn --silent changes A ${{github.sha}})
 
-        
-
-  build:
-    needs: [testing]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Job for branch status check
-        run: echo Build complete
