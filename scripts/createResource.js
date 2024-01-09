@@ -1,16 +1,17 @@
 const fs = require("fs");
 const path = require("path");
-const { create } = require("./operations.js");
-const { apiToken } = require("./apiToken.js");
 
-const filename = process.argv[2];
+filename = process.argv[2];
 
 if (!filename) {
   console.log("Please provide a filename");
   process.exit(1);
 }
+currentDirectory = path.resolve(__dirname);
+parentDir = path.resolve(currentDirectory, "..", filename.split("/").slice(0, -1).join("/"));
 
-const currentDirectory = path.resolve(__dirname);
+const { create } = require(path.resolve(parentDir, "operations.js"));
+const { apiToken } = require("./apiToken.js");
 
 (async () => {
   if (!create) {

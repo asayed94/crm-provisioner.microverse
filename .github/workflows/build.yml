@@ -70,17 +70,17 @@ jobs:
 
       - name: Provision new resource
         id: create_resource
-        if: |
-            github.event.review.state == 'approved' &&
-            github.event.pull_request.base.ref == 'main'
+        # if: |
+        #     github.event.review.state == 'approved' &&
+        #     github.event.pull_request.base.ref == 'main'
         run: |
             response=$(yarn --silent create_resource ${{matrix.files}})
             echo "::set-output name=response::'$response'"
       
       - name: Commit new resource
-        if: |
-          github.event.review.state == 'approved' &&
-          github.event.pull_request.base.ref == 'main'
+        # if: |
+        #   github.event.review.state == 'approved' &&
+        #   github.event.pull_request.base.ref == 'main'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
