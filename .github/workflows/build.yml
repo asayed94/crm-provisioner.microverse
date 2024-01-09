@@ -40,7 +40,7 @@ jobs:
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ needs.set.outputs.matrix && fromJson(needs.set.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.set.outputs.matrix) }}
 
     steps:
       - name: Checkout the repo
@@ -65,7 +65,7 @@ jobs:
         #     github.event.review.state == 'approved' &&
         #     github.event.pull_request.base.ref == 'main'
         run: |
-            response=$(yarn --silent create_resource ${{matrix.files}})
+            response=$(yarn --silent create_resource ${{matrix.file}})
             echo "::set-output name=response::'$response'"
       
       - name: Commit new resource
@@ -75,9 +75,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          yarn update_resource_config ${{matrix.files}} ${{ steps.create_resource.outputs.response }}
-          git add ${{matrix.files}}
-          git commit -m "OPS-000: Update new resource configureation ${{matrix.files}}"
+          yarn update_resource_config ${{matrix.file}} ${{ steps.create_resource.outputs.response }}
+          git add ${{matrix.file}}
+          git commit -m "OPS-000: Update new resource configureation ${{matrix.file}}"
           git push origin ${{ github.event.pull_request.head.ref }}
   
   build:

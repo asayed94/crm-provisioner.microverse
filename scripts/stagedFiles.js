@@ -16,7 +16,7 @@ if (process.argv.length < 3) {
     (file) => file.endsWith(".json") && availablePaths.some((p) => file.includes(p))
   );
   if (outputType === "json") {
-    console.log(JSON.stringify({ files }));
+    console.log(JSON.stringify(files.map((file) => ({ file }))));
   } else {
     console.log(files.join(" "));
   }
