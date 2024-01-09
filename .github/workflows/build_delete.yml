@@ -73,8 +73,7 @@ jobs:
         #     github.event.review.state == 'approved' &&
         #     github.event.pull_request.base.ref == 'main'
         run: |
-            response=$(yarn --silent delete_resource ${{matrix.file}})
-            echo "::set-output name=response::'$response'"
+            yarn --silent delete_resource ${{matrix.file}}
   build:
     needs: [provision-slices]
     runs-on: ubuntu-latest
