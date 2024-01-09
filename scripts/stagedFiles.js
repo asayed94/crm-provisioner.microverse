@@ -10,9 +10,15 @@ if (process.argv.length < 3) {
   // read sha as arguemnt
   const diffType = process.argv[2];
   const sha = process.argv[3];
+  const argv = require("minimist")(process.argv.slice(3));
+  const outputType = argv["out"];
   const files = getChangedFiles(sha, diffType).filter(
     (file) => file.endsWith(".json") && availablePaths.some((p) => file.includes(p))
   );
-  console.log(files.join(" "));
+  if (outputType === "json") {
+    console.log(JSON.stringify({ files }));
+  } else {
+    console.log(files.join(" "));
+  }
   process.exit(0);
 }

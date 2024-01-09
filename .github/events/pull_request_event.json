@@ -1,10 +1,10 @@
 {
-  "action": "opened",
+  "action": "approved",
   "pull_request": {
     "number": 123,
     "head": {
-      "ref": "CRMP-1",
-      "sha": "8dcbcc"
+      "ref": "oerations/1",
+      "sha": "7edb7b7f84aa46ee0999bf31e5424cce62b25156"
     },
     "base": {
       "ref": "main",

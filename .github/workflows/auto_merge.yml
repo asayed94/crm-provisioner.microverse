@@ -3,8 +3,7 @@ name: Auto Merge PR
 on:
   pull_request:
     types:
-      - opened
-      - synchronize
+      - closed
 
 jobs:
   auto_merge:

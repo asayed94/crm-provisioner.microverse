@@ -49,11 +49,9 @@ jobs:
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        new-resource: ${{fromJson(needs.set.outputs.matrix)}}
+      matrix: ${{ fromJson(needs.set.outputs.matrix) }}
 
     steps:
-      
       - name: Checkout the repo
         uses: actions/checkout@v2
         with:
@@ -71,7 +69,8 @@ jobs:
         run: yarn install
 
       - id: list_dirs
-        run: echo ::set-output name=matrix::"$(yarn --silent changes A ${{github.sha}}|jq -cnR '[inputs | select(length>0)]')"
+        run: |
+            echo ::set-output name=matrix::$(yarn --silent changes A ${{github.sha}} --out json)
       
       - name: Provision new resource
         if: |
@@ -79,7 +78,7 @@ jobs:
             github.event.pull_request.base.ref == 'main'
         id: create_resource
         run: |
-            response=$(yarn --silent create_resource ${{matrix.new-resource}})
+            response=$(yarn --silent create_resource ${{matrix.files}})
             echo "::set-output name=response::'$response'"
       
       - name: Commit new resource
@@ -89,9 +88,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          yarn update_resource_config ${{matrix.new-resource}} ${{ steps.create_resource.outputs.response }}
-          git add ${{matrix.new-resource}}
-          git commit -m "OPS-000: Update new resource configureation ${{matrix.new-resource}}"
+          yarn update_resource_config ${{matrix.files}} ${{ steps.create_resource.outputs.response }}
+          git add ${{matrix.files}}
+          git commit -m "OPS-000: Update new resource configureation ${{matrix.files}}"
           git push origin ${{ github.event.pull_request.head.ref }}
   
   build:
