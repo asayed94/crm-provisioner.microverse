@@ -1,6 +1,10 @@
 name: CI build (Create/Delete resources)
 
-on: push
+on: 
+  workflow_run:
+    workflows: ["Testing"]
+    types:
+      - completed
 
 env:
   EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}

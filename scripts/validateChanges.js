@@ -16,7 +16,7 @@ if (modifiedFiles.length > 0) {
   process.exit(1);
 }
 for (const file of addedFiles) {
-  if (!availablePaths.some((path) => file.contains(path))) {
+  if (!availablePaths.some((path) => file.includes(path))) {
     console.error(
       "You cannot add files in this repository. Please create a new file instead using command\n 'yarn add-resource <resource_type> <resource_name>'."
     );
@@ -24,7 +24,7 @@ for (const file of addedFiles) {
   }
 }
 for (const file of deletedFiles) {
-  if (!availablePaths.some((path) => file.contains(path))) {
+  if (!availablePaths.some((path) => file.includes(path))) {
     console.error("You cannot delete files in this repository. Please create a new file instead.");
     process.exit(1);
   }
