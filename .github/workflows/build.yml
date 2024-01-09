@@ -1,15 +1,6 @@
 name: CI build
 
-on: 
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-  pull_request_review:
-    types:
-      - submitted
+on: push
 
 env:
   EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
@@ -43,7 +34,7 @@ jobs:
         run: yarn install
 
       - id: list_changes
-        run: echo ::set-output name=matrix::$(yarn --silent changes A ${{github.sha}} --out json)
+        run: echo "matrix=$(yarn --silent changes A ${{github.sha}} --out json)" >> $GITHUB_OUTPUT
   
   build-slices:
     needs: [set]
