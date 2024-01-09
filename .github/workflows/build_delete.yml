@@ -1,0 +1,84 @@
+name: CI build (Delete resources)
+
+on: 
+  workflow_run:
+    workflows: ["Testing"]
+    types:
+      - completed
+
+env:
+  EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
+  EMARSYS_SECRET: ${{ secrets.EMARSYS_SECRET }}
+
+permissions:
+  contents: write
+  id-token: write
+  actions: read
+
+
+jobs:
+  set:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@lessonnine'
+
+      - name: yarn install
+        run: yarn install
+
+      - id: list_changes
+        run: echo "matrix=$(yarn --silent changes D ${{github.sha}} --out json)" >> $GITHUB_OUTPUT
+      
+    outputs:
+      matrix: ${{ steps.list_changes.outputs.matrix }}
+  
+  build-slices:
+    needs: [set]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: 
+        file: ${{ fromJson(needs.set.outputs.matrix) }}
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@lessonnine'
+
+      - name: yarn install
+        run: yarn install
+
+      - name: Provision new resource
+        id: create_resource
+        # if: |
+        #     github.event.review.state == 'approved' &&
+        #     github.event.pull_request.base.ref == 'main'
+        run: |
+            response=$(yarn --silent delete_resource ${{matrix.file}})
+            echo "::set-output name=response::'$response'"
+  build:
+    needs: [build-slices]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job for branch status check
+        run: echo Build complete

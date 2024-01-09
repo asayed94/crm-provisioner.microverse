@@ -44,7 +44,7 @@ exports.create = async function (filename, token) {
   }
 };
 
-exports.delete = async function (id, token) {
+exports.remove = async function (id, token) {
   const api = `${BASE_API}/${id}/delete`;
   const options = {
     method: "POST",
