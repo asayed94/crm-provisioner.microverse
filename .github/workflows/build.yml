@@ -40,7 +40,7 @@ jobs:
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.set.outputs.matrix) }}
+      matrix: ${{ needs.set.outputs.matrix && fromJson(needs.set.outputs.matrix) }}
 
     steps:
       - name: Checkout the repo
