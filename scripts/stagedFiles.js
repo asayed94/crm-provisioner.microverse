@@ -1,23 +1,18 @@
 //get commited files from the sha commit and return them as a list
 // using commit  sha
 const { execSync } = require("child_process");
-
-// execSync is not defined
-function getStagedFiles(sha, diffType) {
-  const stagedFiles = execSync(`git diff-tree --no-commit-id --name-only --diff-filter=${diffType} -r ${sha}`)
-    .toString()
-    .split("\n")
-    .filter((file) => file.startsWith("src/emarsys"));
-  console.log(stagedFiles);
-}
+const { getChangedFiles, availablePaths } = require("./helpers");
 
 if (process.argv.length < 3) {
-  console.error("Usage: yarn staged <diff_type> <commit_sha>");
+  console.error("Usage: yarn changes <diff_type> <commit_sha>");
   process.exit(1);
 } else {
   // read sha as arguemnt
   const diffType = process.argv[2];
   const sha = process.argv[3];
-  getStagedFiles(sha, diffType);
+  const files = getChangedFiles(sha, diffType).filter(
+    (file) => file.endsWith(".json") && availablePaths.some((p) => file.includes(p))
+  );
+  console.log(files.join(" "));
   process.exit(0);
 }

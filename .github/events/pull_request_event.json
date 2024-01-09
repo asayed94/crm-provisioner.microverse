@@ -4,7 +4,7 @@
     "number": 123,
     "head": {
       "ref": "CRMP-1",
-      "sha": "abc123"
+      "sha": "8dcbcc"
     },
     "base": {
       "ref": "main",
@@ -12,6 +12,6 @@
     }
   },
   "repository": {
-    "full_name": "your-username/your-repo"
+    "full_name": "asayed94/crm-provisioner.microverse.git"
   }
 }
