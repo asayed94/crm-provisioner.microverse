@@ -14,11 +14,10 @@ Please provide a brief description of the changes or features implemented in thi
 
 ## Checklist
 
-- [ ] I have tested these changes locally.
+- [ ] When creating my branch, I first pulled the latest changes from the `main` branch.
 - [ ] My code follows the project's coding guidelines.
-- [ ] I have updated the documentation, if necessary.
-- [ ] All existing tests are passing.
-- [ ] I have added new tests to cover my changes.
+- [ ] I have ONLY added or deleted files under `/src/*`.
+- [ ] I'll check the Github actions status.
 - [ ] The branch is up-to-date with the base branch.
 - [ ] I have reviewed my own code to ensure quality.
 
