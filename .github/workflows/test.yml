@@ -1,8 +1,9 @@
 name: Testing
  
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    branches-ignore:
+      - operations/*
 
 permissions:
   contents: read
@@ -31,11 +32,11 @@ jobs:
       - name: yarn install
         run: yarn install
 
-      # - name: Validate Files Changes
-      #   run: yarn validate_changes:head_main ${{github.sha}}
+      - name: Validate Files Changes
+        run: yarn validate_changes:head_main ${{github.sha}}
 
-      # - name: Validate new resources Schema
-      #   run: yarn validate_schema $(yarn --silent changes A ${{github.sha}})
+      - name: Validate new resources Schema
+        run: yarn validate_schema $(yarn --silent changes A ${{github.sha}})
 
         
 

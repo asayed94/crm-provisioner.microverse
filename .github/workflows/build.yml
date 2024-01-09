@@ -1,11 +1,13 @@
 name: CI build
 
-on: push
-  # workflow_run:
-  #   workflows: ["Testing"]
-  #   # branches: [main]
-  #   types:
-  #     - completed
+on: 
+  pull_request_review:
+    types:
+      - submitted
+
+env:
+  EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
+  EMARSYS_SECRET: ${{ secrets.EMARSYS_SECRET }}
 
 permissions:
   contents: read
@@ -14,16 +16,20 @@ permissions:
 
 
 jobs:
-  set:
+  build-slices:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        new-resource: ${{fromJson(steps.list_dirs.outputs.matrix)}}
 
     steps:
-      - name: Checkout the repo1
+      
+      - name: Checkout the repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Use Node.js1
+      - name: Use Node.js
         uses: actions/setup-node@v2
         with:
           cache: 'yarn'
@@ -31,51 +37,32 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
 
-      - name: yarn install1
+      - name: yarn install
         run: yarn install
 
       - id: list_dirs
-      # this should turn to a json
         run: echo ::set-output name=matrix::"$(yarn --silent changes A ${{github.sha}}|jq -cnR '[inputs | select(length>0)]')"
-
-  build-slices:
-    runs-on: ubuntu-latest
-    needs: set
-    strategy:
-      matrix:
-        new-resource: ["src/emarsys/contact_fields/last_lesson_at_1704730601557.json"]
-
-    steps:
-      - name: Checkout the repo2
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js2
-        uses: actions/setup-node@v2
-        with:
-          cache: 'yarn'
-          node-version: 16
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@lessonnine'
-
-      - name: yarn install2
-        run: yarn install
-
+      
       - name: Provision new resource
+        if: |
+            github.event.review.state == 'approved' &&
+            github.event.pull_request.base.ref == 'main'
         id: create_resource
         run: |
             response=$(yarn --silent create_resource ${{matrix.new-resource}})
             echo "::set-output name=response::'$response'"
       
       - name: Commit new resource
+        if: |
+          github.event.review.state == 'approved' &&
+          github.event.pull_request.base.ref == 'main'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn update_resource_config ${{matrix.new-resource}} ${{ steps.create_resource.outputs.response }}
           git add ${{matrix.new-resource}}
           git commit -m "OPS-000: Update new resource configureation ${{matrix.new-resource}}"
-          git push --set-upstream origin ${{github.ref}}
+          git push origin ${{ github.event.pull_request.head.ref }}
   
   build:
     needs: [build-slices]

@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 
-const BASE_API = "https://api.emarsys.net/api/v2/field";
+const BASE_API = "https://api.emarsys.net/api/v2/event";
 
 async function sendRequest(api, options, payloadContent) {
   try {
@@ -45,9 +45,9 @@ exports.create = async function (filename, token) {
 };
 
 exports.delete = async function (id, token) {
-  const api = `${BASE_API}/${id}`;
+  const api = `${BASE_API}/${id}/delete`;
   const options = {
-    method: "DELETE",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-WSSE": token,
@@ -60,5 +60,6 @@ exports.delete = async function (id, token) {
   } catch (error) {
     console.error(error.message);
     process.exit(1);
+    // throw error;
   }
 };
