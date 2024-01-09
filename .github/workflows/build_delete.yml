@@ -1,4 +1,4 @@
-name: CI build (Delete resources)
+name: CI Provision (Delete resources)
 
 on: 
   pull_request_review:
@@ -41,7 +41,7 @@ jobs:
     outputs:
       matrix: ${{ steps.list_changes.outputs.matrix }}
   
-  build-slices:
+  provision-slices:
     if: ${{ (github.event.review.state == 'approved') &&  startsWith(needs.set.outputs.matrix,'') }}
     needs: [set]
     runs-on: ubuntu-latest
@@ -76,7 +76,7 @@ jobs:
             response=$(yarn --silent delete_resource ${{matrix.file}})
             echo "::set-output name=response::'$response'"
   build:
-    needs: [build-slices]
+    needs: [provision-slices]
     runs-on: ubuntu-latest
     steps:
       - name: Job for branch status check
