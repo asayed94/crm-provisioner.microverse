@@ -42,7 +42,7 @@ jobs:
       matrix: ${{ steps.list_changes.outputs.matrix }}
   
   build-slices:
-    if: github.event.review.state == 'approved'
+    if: ${{ (github.event.review.state == 'approved') &&  (fromJson(needs.set.outputs.matrix).length > 0) }}
     needs: [set]
     runs-on: ubuntu-latest
     strategy:
