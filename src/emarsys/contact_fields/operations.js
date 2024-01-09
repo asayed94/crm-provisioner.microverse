@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 
+const current_directory = path.resolve(__dirname);
 const BASE_API = "https://api.emarsys.net/api/v2/field";
 
 async function sendRequest(api, options, payloadContent) {
@@ -19,7 +20,6 @@ async function sendRequest(api, options, payloadContent) {
 }
 
 exports.create = async function (filename, token) {
-  const current_directory = path.resolve(__dirname);
   const file = path.resolve(current_directory, filename);
   const payloadContent = fs.readFileSync(file, "utf8");
   const options = {
@@ -44,8 +44,10 @@ exports.create = async function (filename, token) {
   }
 };
 
-exports.delete = async function (id, token) {
-  const api = `${BASE_API}/${id}`;
+exports.remove = async function (filename, token) {
+  const file = path.resolve(current_directory, filename);
+  const payloadContent = fs.readFileSync(file, "utf8");
+  const api = `${BASE_API}/${JSON.parse(payloadContent).id}`;
   const options = {
     method: "DELETE",
     headers: {

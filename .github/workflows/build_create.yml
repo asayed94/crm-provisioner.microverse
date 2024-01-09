@@ -1,4 +1,4 @@
-name: CI build (Create/Delete resources)
+name: CI build (Create resources)
 
 on: 
   workflow_run:

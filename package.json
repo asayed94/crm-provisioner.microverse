@@ -12,6 +12,7 @@
     "validate_changes:head_main": "node ./scripts/validateChanges.js",
     "changes": "node ./scripts/stagedFiles.js",
     "create_resource": "node ./scripts/createResource.js",
+    "delete_resource": "node ./scripts/deleteResource.js",
     "update_resource_config": "node ./scripts/updateResourceConfig.js"
   },
   "dependencies": {
