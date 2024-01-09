@@ -15,6 +15,9 @@ if (process.argv.length < 3) {
   const files = getChangedFiles(sha, diffType).filter(
     (file) => file.endsWith(".json") && availablePaths.some((p) => file.includes(p))
   );
+  if (!files.length) {
+    process.exit(0);
+  }
   if (outputType === "json") {
     console.log(JSON.stringify(files));
   } else {
