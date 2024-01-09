@@ -49,7 +49,8 @@ exports.remove = async function (filename, token) {
   const simpleGit = require("simple-git");
   const git = simpleGit();
   const commitSHA = exec("git rev-parse origin/main").toString().trim();
-  const payloadContent = await git.show([`${commitSHA}:${filename}`]);
+  const headCommitSHA = exec("git rev-parse HEAD").toString().trim();
+  const payloadContent = await git.show([`${commitSHA}...${headCommitSHA}:${filename}`]);
   console.log("DELETED FILE CONFIG", payloadContent);
   const api = `${BASE_API}/${JSON.parse(payloadContent).id}`;
   const options = {

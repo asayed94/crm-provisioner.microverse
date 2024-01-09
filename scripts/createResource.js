@@ -8,7 +8,7 @@ if (!filename) {
   process.exit(1);
 }
 const currentDirectory = path.resolve(__dirname);
-const parentDir = path.resolve(currentDirectory, filename.split("/").slice(0, -1).join("/"));
+const parentDir = path.resolve(currentDirectory, "..", filename.split("/").slice(0, -1).join("/"));
 
 const { create } = require(path.resolve(parentDir, "operations.js"));
 const { apiToken } = require("./apiToken.js");
