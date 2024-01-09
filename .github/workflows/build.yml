@@ -43,7 +43,7 @@ jobs:
         run: yarn install
 
       - id: list_changes
-        run: echo ::set-output name=matrix::"$(yarn --silent changes A ${{github.sha}}|jq -cnR '[inputs | select(length>0)]')"
+        run: echo ::set-output name=matrix::$(yarn --silent changes A ${{github.sha}} --out json)
   
   build-slices:
     needs: [set]
@@ -68,15 +68,11 @@ jobs:
       - name: yarn install
         run: yarn install
 
-      - id: list_dirs
-        run: |
-            echo ::set-output name=matrix::$(yarn --silent changes A ${{github.sha}} --out json)
-      
       - name: Provision new resource
+        id: create_resource
         if: |
             github.event.review.state == 'approved' &&
             github.event.pull_request.base.ref == 'main'
-        id: create_resource
         run: |
             response=$(yarn --silent create_resource ${{matrix.files}})
             echo "::set-output name=response::'$response'"
