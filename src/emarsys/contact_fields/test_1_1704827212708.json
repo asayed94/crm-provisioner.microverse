@@ -1,4 +1,6 @@
 {
-    "name": "test_1",
-    "application_type": "longtext"
+  "name": "test_1",
+  "application_type": "longtext",
+  "id": 6309,
+  "string_id": "test_1"
 }
