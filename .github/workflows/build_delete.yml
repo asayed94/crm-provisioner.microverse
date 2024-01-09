@@ -36,6 +36,7 @@ jobs:
 
       - id: list_changes
         run: echo "matrix=$(yarn --silent changes D ${{github.event.pull_request.head.sha}} --out json)" >> $GITHUB_OUTPUT
+      - run: echo ${{ fromJson(needs.set.outputs.matrix).length }} ${{ github.event.review.state == 'approved' }}
 
     outputs:
       matrix: ${{ steps.list_changes.outputs.matrix }}
