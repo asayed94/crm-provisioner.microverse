@@ -95,7 +95,7 @@ jobs:
       - name: Commit new resource config
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "OPS: Update new resource configureation ${{matrix.file}}"
+          commit_message: "[skip actions]: Update new resource configureation ${{matrix.file}}"
           commit_author: Author <actions@github.com>
           add_options: '-u'
           branch: ${{ github.event.pull_request.head.ref }}

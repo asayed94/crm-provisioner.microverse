@@ -4,11 +4,17 @@ on:
   workflow_run:
           workflows: ["CD Provision (Create resources)","CD Provision (Delete resources)"]
           types: [completed]
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: read
+  actions: read
 
 jobs:
     build:
       runs-on: ubuntu-latest
       steps:
+        - run: echo ${{ github.event.workflow_run.conclusion }}
         - name: Check Build status
           uses: actions/github-script@v3
           with:
