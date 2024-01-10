@@ -1,4 +1,6 @@
 {
-    "name": "test_2",
-    "application_type": "numeric"
+  "name": "test_2",
+  "application_type": "numeric",
+  "id": 6311,
+  "string_id": "test_2"
 }
