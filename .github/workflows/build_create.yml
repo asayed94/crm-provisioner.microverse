@@ -1,4 +1,4 @@
-name: CI Provision (Create resources)
+name: CD Provision (Create resources)
 
 on: 
   pull_request_review:
