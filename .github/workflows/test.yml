@@ -34,7 +34,7 @@ jobs:
       - name: yarn install
         run: yarn install
 
-      - run: echo  ${{github.event.pull_request.head.user}}
+      - run: echo  ${{toJSON(github.event.pull_request.head.user)}}
       
       - name: Validate Files Changes
         if: github.event.pull_request.head.user.login != 'dependabot[bot]'
