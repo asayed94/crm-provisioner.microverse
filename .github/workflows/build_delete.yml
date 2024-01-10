@@ -63,20 +63,24 @@ jobs:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
-
+  #  - name: Set up AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      #     aws-region: ${{ vars.AWS_REGION }}
       - name: yarn install
         run: yarn install
 
       - name: Provision new resource
         id: create_resource
-        # if: |
-        #     github.event.review.state == 'approved' &&
-        #     github.event.pull_request.base.ref == 'main'
+        if: |
+            github.event.review.state == 'approved' &&
+            github.event.pull_request.base.ref == 'main'
         run: |
             yarn --silent delete_resource ${{matrix.file}}
   build:
-    needs: [provision-slices]
     runs-on: ubuntu-latest
+    needs: [provision-slices]
     steps:
-      - name: Job for branch status check
-        run: echo Build complete
+      - run: echo The build process completed successfully.
+          

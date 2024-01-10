@@ -3,6 +3,7 @@ name: CI Provision (Create resources)
 on: 
   pull_request_review:
     types: [submitted]
+    
 
 env:
   EMARSYS_USERNAME: ${{ secrets.EMARSYS_USERNAME }}
@@ -49,7 +50,7 @@ jobs:
       fail-fast: false
       matrix: 
         file: ${{ fromJson(needs.set.outputs.matrix) }}
-
+    
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
@@ -63,15 +64,21 @@ jobs:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
+      
+      # - name: Set up AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      #     aws-region: ${{ vars.AWS_REGION }}
 
       - name: yarn install
         run: yarn install
 
       - name: Provision new resource
         id: create_resource
-        # if: |
-        #     github.event.review.state == 'approved' &&
-        #     github.event.pull_request.base.ref == 'main'
+        if: |
+            github.event.review.state == 'approved' &&
+            github.event.pull_request.base.ref == 'main'
         run: |
             response=$(yarn --silent create_resource ${{matrix.file}})
             echo "::set-output name=response::'$response'"
@@ -97,8 +104,7 @@ jobs:
           push_options: --force
   
   build:
-    needs: [provision-slices]
     runs-on: ubuntu-latest
+    needs: [provision-slices]
     steps:
-      - name: Job for branch status check
-        run: echo Build complete
+      - run: echo The build process completed successfully.
