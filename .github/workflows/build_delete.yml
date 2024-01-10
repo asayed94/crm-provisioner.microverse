@@ -1,4 +1,4 @@
-name: CI Provision (Delete resources)
+name: CD Provision (Delete resources)
 
 on: 
   pull_request_review:
