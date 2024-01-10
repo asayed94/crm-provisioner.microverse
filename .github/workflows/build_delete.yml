@@ -82,5 +82,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [provision-slices]
     steps:
-      - run: echo The build process completed successfully.
+      - run: |
+          if [ ${{ job.status }} == 'failure' ]; then
+            echo "Testing failed"
+            exit 1
+          fi
+          echo "Testing passed"
           
