@@ -4,8 +4,8 @@ const currentDirectory = path.resolve(__dirname);
 
 // add help command
 if (process.argv[2] === "help") {
-  console.log("Usage: yarn add-resource <resource_type> <resource_name>");
-  console.log("Example: yarn add-resource contact_field new_property");
+  console.log("Usage: yarn add-resource <crm_provide>/<resource_type> <resource_name>");
+  console.log("Example: yarn add-resource emarsys/contact_field new_property");
   return;
 }
 
@@ -29,38 +29,39 @@ const writeCb = (err) => {
   }
 };
 switch (resourceType) {
-  case "contact_field":
+  case "emarsys/contact_field":
     const fileContent = `{
     "name": "last_completed_at",
     "application_type": "longtext"
 }`;
+    const exampleContent = fs.readFileSync(
+      path.resolve(currentDirectory, "..", "src/emarsys/contact_fields/example.json"),
+      "utf8"
+    );
+
+    const exampleJson = JSON.parse(exampleContent);
+    exampleJson.name = resourceName;
     fs.writeFileSync(
       path.resolve(currentDirectory, "..", "src/emarsys/contact_fields", filename),
-      fileContent,
+      JSON.stringify(exampleJson, null, 2),
       writeCb
     );
     break;
-  case "external_event":
-    const fileContent_1 = `{
-        "name": "${resourceName}",
-        "application_type: "longtext"
-          }`;
+  case "emarsys/external_event":
+    const exampleEventContent = fs.readFileSync(
+      path.resolve(currentDirectory, "..", "src/emarsys/external_events/example.json"),
+      "utf8"
+    );
+    const exampleEventJson = JSON.parse(exampleEventContent);
+    exampleEventJson.name = resourceName;
     fs.writeFileSync(
       path.resolve(currentDirectory, "..", "src/emarsys/external_events", filename),
-      fileContent_1,
+      JSON.stringify(exampleEventJson, null, 2),
       writeCb
     );
     break;
-  case "webhook":
-    const fileContent_2 = `{
-        "name": "${resourceName}",
-        "application_type: "longtext"
-          }`;
-    fs.writeFileSync(
-      path.resolve(currentDirectory, "..", "src/emarsys/webhook_presets", filename),
-      fileContent_2,
-      writeCb
-    );
+  case "emarsys/webhook_preset":
+    throw new Error("Not implemented yet.");
     break;
   default:
     console.log("No resource type specified.");
