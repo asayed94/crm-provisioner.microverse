@@ -14,12 +14,11 @@ jobs:
     build:
       runs-on: ubuntu-latest
       steps:
-        - run: echo ${{ github.event.workflow_run.conclusion }}
         - name: Check Build status
           uses: actions/github-script@v3
           with:
             script: |
-                    const conclusion = github.event.workflow_run.conclusion;
+                    const conclusion = "${{github.event.workflow_run.conclusion}}";
                     const status = conclusion === 'success' ? 'passing' : 'failing';
                     const body = `Build is ${status}`;
                     if (status === 'failing') {
