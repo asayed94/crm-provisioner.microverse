@@ -1,4 +1,6 @@
 {
-    "name": "last_completed_at",
-    "application_type": "longtext"
+  "name": "last_completed_at",
+  "application_type": "longtext",
+  "id": 6315,
+  "string_id": "last_completed_at"
 }
