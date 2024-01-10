@@ -88,8 +88,6 @@ jobs:
         #   github.event.review.state == 'approved' &&
         #   github.event.pull_request.base.ref == 'main'
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn update_resource_config ${{matrix.file}} ${{ steps.create_resource.outputs.response }}
           git add ${{matrix.file}}
         
@@ -98,6 +96,8 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "OPS: Update new resource configureation ${{matrix.file}}"
+          commit_author: Author <actions@github.com>
+          add_options: '-u'
           branch: ${{ github.event.pull_request.head.ref }}
           push_options: --force
   
