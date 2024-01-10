@@ -1,9 +1,9 @@
 name: Check Build status
 
 on:
-        workflow_run:
-                workflows: ["CD Provision (Create resources)","CD Provision (Delete resources)"]
-                types: [completed]
+  workflow_run:
+          workflows: ["CD Provision (Create resources)","CD Provision (Delete resources)"]
+          types: [completed]
 
 jobs:
     build:
