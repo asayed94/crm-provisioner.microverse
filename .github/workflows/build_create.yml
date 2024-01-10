@@ -92,7 +92,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn update_resource_config ${{matrix.file}} ${{ steps.create_resource.outputs.response }}
           git add ${{matrix.file}}
-          # git commit -m "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          # git commit -m "Update new resource configureation ${{matrix.file}}"
           # git push origin ${{ github.event.pull_request.head.ref }}
         
       
