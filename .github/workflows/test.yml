@@ -5,9 +5,7 @@ on:
     branches: [ main ]
     types: [ opened, synchronize, reopened ]
     paths:
-      - 'src/**'
-  push:
-    
+      - 'src/**'    
 
 permissions:
   contents: read
