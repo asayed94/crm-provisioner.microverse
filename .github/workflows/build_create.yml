@@ -99,7 +99,7 @@ jobs:
       - name: Commit new resource config
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "[skip actions]: Update new resource configureation ${{matrix.file}}"
+          commit_message: "Update new resource configureation ${{matrix.file}}"
           branch: ${{ github.event.pull_request.head.ref }}
           push_options: --force
   
@@ -107,9 +107,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: [provision-slices]
     steps:
-      - run: |
-          if [ ${{ job.status }} == 'failure' ]; then
-            echo "Testing failed"
-            exit 1
-          fi
-          echo "Testing passed"
+      - run: echo "Build passed"
