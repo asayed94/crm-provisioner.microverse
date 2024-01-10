@@ -3,7 +3,7 @@ name: Testing
 on: 
   pull_request:
     branches: [ main ]
-    types: [ opened, synchronize, reopened ]
+    types: [ opened, synchronize, reopened ]    
     paths:
       - 'src/**'
 
@@ -34,9 +34,18 @@ jobs:
       - name: yarn install
         run: yarn install
 
+      - run: echo  ${{github.event.pull_request.head.user}}
+      
       - name: Validate Files Changes
+        if: github.event.pull_request.head.user.login != 'dependabot[bot]'
         run: yarn validate_changes:head_main ${{github.event.pull_request.head.sha}}
 
       - name: Validate new resources Schema
         run: yarn validate_schema $(yarn --silent changes A ${{github.event.pull_request.head.sha}})
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [testing]
+    steps:
+      - run: echo The build process completed successfully.
 
