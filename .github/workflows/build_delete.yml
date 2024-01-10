@@ -78,9 +78,3 @@ jobs:
             github.event.pull_request.base.ref == 'main'
         run: |
             yarn --silent delete_resource ${{matrix.file}}
-  build:
-    runs-on: ubuntu-latest
-    needs: [provision-slices]
-    steps:
-      - run: echo The build process completed successfully.
-          
