@@ -86,5 +86,5 @@ jobs:
     
     steps:
       - name: Check if previous step failed
-        if: ${{ failure() }}
+        if: needs.provision-slices.result == 'failure'
         run: exit 1
