@@ -27,6 +27,7 @@ exports.apiToken = function (filename) {
 
 const getFromSecretsManager = async (secretArn) => {
   try {
+    const client = new SecretsManagerClient();
     const command = new GetSecretValueCommand({ SecretId: secretArn });
     const response = await client.send(command);
 
