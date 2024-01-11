@@ -82,6 +82,7 @@ jobs:
         id: create_resource
         env:
           EMARSYS_CREDENTIAL_ARN: ${{ vars.EMARSYS_CREDENTIAL_ARN }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
         if: |
             github.event.review.state == 'approved' &&
             github.event.pull_request.base.ref == 'main'
