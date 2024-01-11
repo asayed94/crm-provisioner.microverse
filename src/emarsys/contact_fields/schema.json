@@ -17,5 +17,9 @@
                 "numeric"
             ]
         }
-    }
+    },
+    "required": [
+        "name",
+        "application_type"
+    ]
 }

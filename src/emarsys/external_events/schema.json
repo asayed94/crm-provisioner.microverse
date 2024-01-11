@@ -6,5 +6,8 @@
             "pattern": "^(?![0-9])[A-Za-z0-9-_ ]+$",
             "description": "A string that contains letters, numbers, hyphens, and underscores, but does not start with a number"
         }
-    }
+    },
+    "required": [
+        "name"
+    ]
 }
