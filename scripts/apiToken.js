@@ -26,6 +26,9 @@ exports.apiToken = function (filename) {
 };
 
 const getFromSecretsManager = async (secretArn) => {
+  const client = new SecretsManagerClient({
+    region: process.env["AWS_REGION"] || "eu-west-1",
+  });
   try {
     const command = new GetSecretValueCommand({ SecretId: secretArn });
     const response = await client.send(command);
