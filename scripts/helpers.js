@@ -20,12 +20,12 @@ function getChangedFiles(sha, diffType) {
   }
 }
 
-function getScehma(filename) {
+function getSchema(filename) {
   //get the parent directory of the filename sent as argument
   const parentDirectory = filename.split("/").slice(0, -1).join("/");
 
   const schema = JSON.parse(
-    fs.readFileSync(path.resolve(currentDirectory, "..", `${parentDirectory}/scehma.json`), "utf8")
+    fs.readFileSync(path.resolve(currentDirectory, "..", `${parentDirectory}/schema.json`), "utf8")
   );
   const ajv = new Ajv();
   const validate = ajv.compile(schema);
@@ -35,5 +35,5 @@ function getScehma(filename) {
 const availablePaths = ["src/emarsys/contact_fields", "src/emarsys/external_events", "src/emarsys/webhook_presets"];
 
 exports.getChangedFiles = getChangedFiles;
-exports.getScehma = getScehma;
+exports.getSchema = getSchema;
 exports.availablePaths = availablePaths;

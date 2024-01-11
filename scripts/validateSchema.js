@@ -1,14 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const currentDirectory = path.resolve(__dirname);
-const { getScehma } = require("./helpers");
+const { getSchema } = require("./helpers");
 
 // read list of paths sent as arguments
 const paths = process.argv.slice(2);
 
 for (const file of paths) {
   console.log(file);
-  const validate = getScehma(file);
+  const validate = getSchema(file);
   const jsonData = fs.readFileSync(path.resolve(currentDirectory, "..", file), "utf8");
   const isValid = validate(JSON.parse(jsonData));
   if (isValid) {

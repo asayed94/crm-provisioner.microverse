@@ -8,7 +8,7 @@
   "type": "commonjs",
   "scripts": {
     "add-resource": "node ./scripts/addResource.js",
-    "validate_schema": "node ./scripts/validateScehma.js",
+    "validate_schema": "node ./scripts/validateSchema.js",
     "validate_changes:head_main": "node ./scripts/validateChanges.js",
     "changes": "node ./scripts/stagedFiles.js",
     "create_resource": "node ./scripts/createResource.js",
@@ -21,5 +21,8 @@
     "axios": "^1.6.5",
     "minimist": "^1.2.8",
     "simple-git": "^3.22.0"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
   }
 }
