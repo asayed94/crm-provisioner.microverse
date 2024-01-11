@@ -50,7 +50,11 @@ jobs:
       fail-fast: false
       matrix: 
         file: ${{ fromJson(needs.set.outputs.matrix) }}
+        environment: [production, staging]
     
+    environment:
+      name: ${{ matrix.environment }}
+
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
@@ -65,17 +69,19 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@lessonnine'
       
-      # - name: Set up AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
-      #     aws-region: ${{ vars.AWS_REGION }}
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: yarn install
         run: yarn install
 
       - name: Provision new resource
         id: create_resource
+        env:
+          EMARSYS_CREDENTIAL_ARN: ${{ vars.EMARSYS_CREDENTIAL_ARN }}
         if: |
             github.event.review.state == 'approved' &&
             github.event.pull_request.base.ref == 'main'

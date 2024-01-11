@@ -49,7 +49,9 @@ jobs:
       fail-fast: false
       matrix:
         file: ${{ fromJson(needs.set.outputs.matrix) }}
-
+        environment: [production, staging]
+    environment:
+      name: ${{ matrix.environment }}
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
@@ -72,12 +74,14 @@ jobs:
         run: yarn install
 
       - name: Provision new resource
-        id: create_resource
+        id: delete_resource
+        env:
+          EMARSYS_CREDENTIAL_ARN: ${{ vars.EMARSYS_CREDENTIAL_ARN }}
         if: |
             github.event.review.state == 'approved' &&
             github.event.pull_request.base.ref == 'main'
         run: |
-            yarn --silent delete_resource ${{matrix.file}}
+          yarn --silent delete_resource ${{matrix.file}}
   
   build:
     if: always()
