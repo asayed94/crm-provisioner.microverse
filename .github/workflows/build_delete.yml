@@ -78,3 +78,13 @@ jobs:
             github.event.pull_request.base.ref == 'main'
         run: |
             yarn --silent delete_resource ${{matrix.file}}
+  
+  build:
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [provision-slices]
+    
+    steps:
+      - name: Check if previous step failed
+        if: needs.provision-slices.result == 'failure'
+        run: exit 1
